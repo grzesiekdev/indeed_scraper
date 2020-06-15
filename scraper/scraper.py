@@ -22,17 +22,15 @@ class Scraper:
         self.soup = BeautifulSoup(self.page.content, 'html.parser')
         self.result = None
 
-        self.__find_job_offers()
-
     def get_url(self) -> str:
         return self._url
 
-    def set_url(self, url: str) -> None:
+    def __set_url(self, url: str) -> None:
         self._url = url
 
     def connect(self, url: str) -> object:
         try:
-            self.set_url(url)
+            self.__set_url(url)
             connection = requests.get(self.get_url())
             return connection
         except requests.exceptions.RequestException as e:
@@ -91,7 +89,7 @@ class Scraper:
                 return True
         return False
 
-    def __find_job_offers(self) -> None:
+    def find_job_offers(self) -> None:
         self.skip()
         pages = self.find_number_of_pages()
         if not pages:

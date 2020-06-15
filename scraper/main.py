@@ -11,7 +11,6 @@ def start_scraping():
     print(f'URL: {scraper.page.url}, Place: {scraper.location}, Job name: \
 {scraper.job_name}\n')
 
-    scraper.find_job_offers()
     template = Template(scraper.offers, scraper.number_of_offers)
 
 

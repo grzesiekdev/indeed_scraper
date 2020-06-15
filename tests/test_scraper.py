@@ -3,7 +3,7 @@ import os.path
 from scraper_local import ScraperLocal
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from scraper import Scraper
+from scraper.scraper import Scraper
 import unittest
 
 
@@ -33,7 +33,7 @@ jobs?q=python&l=katowice&sort=date&radius=15&start=0')
 
 class TestScraper(TestMain):
     def test_set_url(self) -> None:
-        self.scraper.set_url('google.pl')
+        self.scraper.__set_url('google.pl')
         self.assertEqual(self.scraper.get_url(), 'google.pl')
 
     def test_skip(self) -> None:
