@@ -52,3 +52,10 @@ python test_scraper.py
 
 ### Additional info
 Class ScraperLocal in /scraper/tests/scraper_local.py is designed to run tests on static version of indeed page, because some elements were hard to check on live version of site, due to constant changes. 
+
+## TODO
+- [x] Reorganize files structure
+- [x] Make find_jobs public and set_url private
+- [ ] Improve CLI: use argparse for taking input from users
+- [ ] Use typing lib
+- [ ] Reorganize Scraper class to make it easier for maintain
