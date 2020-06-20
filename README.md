@@ -29,18 +29,30 @@ pip install -r requirements.txt
 ## Usage
 
 ```
-python main.py
-Enter job name: <job name that you are looking for>
-Enter place: <location>
-Enter radius: <maximum distance from location>
+python main.py -h
+usage: main.py [-h] -j JOB_NAME -l LOCATION -r RADIUS [-s SKIP] [-t]
+
+Scraping job offers from indeed.pl
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -j JOB_NAME, --job_name JOB_NAME
+                        Job name
+  -l LOCATION, --location LOCATION
+                        Location
+  -r RADIUS, --radius RADIUS
+                        Radius from location
+  -s SKIP, --skip SKIP  Skip offers over specified amount of time
+  -t, --test            Test version , that let you to check working of the
+                        script offline, on dummy page in /data/
 ```
-Then after a while, you can check output.html in /indeed_scraper/
+Then after a while, you can check output.html in /indeed_scraper/scraper
 
 ## Development usage
 
 Fill < > parameters with specific data
 ```
-scraper = Scraper(<job_name>, <location>, <radius>)
+scraper = Scraper(<job_name: str>, <location: str>, <radius: int>, <skip: int>, <is_test_version: bool>)
 template = Template(scraper.offers, scraper.number_of_offers)
 ```
 
@@ -51,4 +63,3 @@ python test_scraper.py
 ```
 
 ### Additional info
-Class ScraperLocal in /scraper/tests/scraper_local.py is designed to run tests on static version of indeed page, because some elements were hard to check on live version of site, due to constant changes. 
