@@ -57,9 +57,17 @@ template = Template(scraper.offers, scraper.number_of_offers)
 ```
 
 ## Tests
-You can find and run tests in /scraper/tests, by:
+You can find and run tests in /indeed_scraper/tests, by:
 ```
 python test_scraper.py
 ```
 
 ### Additional info
+
+## TODO
+- [x] Reorganize files structure
+- [x] Make find_jobs public and set_url private
+- [ ] Improve CLI: use argparse for taking input from users
+- [ ] Use typing lib
+- [ ] Reorganize Scraper class to make it easier for maintain
+>>>>>>> b0fdb78a9d008ddf7d3abc09e9565e519fbaf635
