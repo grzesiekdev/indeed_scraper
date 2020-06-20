@@ -29,7 +29,6 @@ pip install -r requirements.txt
 ## Usage
 
 ```
-python main.py -h
 usage: main.py [-h] -j JOB_NAME -l LOCATION -r RADIUS [-s SKIP] [-t]
 
 Scraping job offers from indeed.pl
@@ -67,7 +66,6 @@ python test_scraper.py
 ## TODO
 - [x] Reorganize files structure
 - [x] Make find_jobs public and set_url private
-- [ ] Improve CLI: use argparse for taking input from users
+- [x] Improve CLI: use argparse for taking input from users
 - [ ] Use typing lib
-- [ ] Reorganize Scraper class to make it easier for maintain
->>>>>>> b0fdb78a9d008ddf7d3abc09e9565e519fbaf635
+- [x] Reorganize Scraper class to make it easier for maintain
