@@ -2,31 +2,50 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import math
+import sys
 
 
 class Scraper:
-    def __init__(self, job_name: str, location: str, radius: int):
+    def __init__(self, job_name, location, radius, skip, is_test_version):
         self.job_name = job_name
         self.location = location
         self.radius = radius
-        self._url = ''
+        self.skip = skip
+        self.is_test_version = is_test_version
 
+        self._url = ''
         self.page = None
         self.page_number = 0
-        self.get_content()
 
-        self.is_skipped = ''
+        self.soup = None
+        self.result = None
+
+        self.get_content()
         self.offers = {}
         self.number_of_offers = 0
 
-        self.soup = BeautifulSoup(self.page.content, 'html.parser')
-        self.result = None
+    def show_link(self) -> None:
+        print(f'URL: {self._url}, Place: {self.location}, Job name: \
+{self.job_name}\n')
 
     def get_url(self) -> str:
         return self._url
 
     def __set_url(self, url: str) -> None:
         self._url = url
+
+    def __set_to_test_mode(self) -> None:
+        with open('data/sample_page.html', 'r') as f:
+            self.page = f.read()
+        self.soup = BeautifulSoup(self.page, 'html.parser')
+        self.result = self.soup.find(id='resultsCol')
+
+    def __set_to_normal_mode(self) -> None:
+        self.page = self.connect(f'https://pl.indeed.com/jobs?q=\
+{self.job_name}&l={self.location}&sort=date&radius={self.radius}\
+&start={self.page_number}')
+        self.soup = BeautifulSoup(self.page.content, 'html.parser')
+        self.result = self.soup.find(id='resultsCol')
 
     def connect(self, url: str) -> object:
         try:
@@ -37,15 +56,10 @@ class Scraper:
             return e
 
     def get_content(self) -> None:
-        self.page = self.connect(f'https://pl.indeed.com/jobs?q=\
-{self.job_name}&l={self.location}&sort=date&radius={self.radius}\
-&start={self.page_number}')
-        self.soup = BeautifulSoup(self.page.content, 'html.parser')
-        self.result = self.soup.find(id='resultsCol')
-
-    def skip(self) -> None:
-        self.is_skipped = input("Do you want to skip offers that are older\
- than 30 days? y/n: ")
+        if self.is_test_version:
+            self.__set_to_test_mode()
+        else:
+            self.__set_to_normal_mode()
 
     def find_jobs_div(self) -> str:
         return self.result.find_all('div', class_='jobsearch-SerpJobCard')
@@ -76,7 +90,7 @@ class Scraper:
             pages_urls.append(counter)
         return pages_urls
 
-    def is_location_set(self, location: str, job: object) -> tuple:
+    def check_and_get_location(self, location: str, job: object) -> tuple:
         if not location:
             location = job.find('span', class_='location')
             if not location:
@@ -84,13 +98,20 @@ class Scraper:
         return True, location
 
     def is_over30_skipped(self, date: str) -> bool:
-        if self.is_skipped.lower() == 'y':
-            if date.text.strip()[:3] == '30+':
+        if not self.skip:
+            self.skip = 40
+        exceptions = ['Dodano dzisiaj', 'wczoraj', 'Dodano przed chwilą']
+        if date.text.strip() in exceptions:
+            return False
+        if int(date.text.strip()[:2]) / 10 < 1 and self.skip >= 10:
+            return False
+        else:
+            if int(date.text.strip()[:2]) > self.skip:
                 return True
-        return False
+            else:
+                return False
 
     def find_job_offers(self) -> None:
-        self.skip()
         pages = self.find_number_of_pages()
         if not pages:
             print('No offers found! Try to change your query.')
@@ -109,7 +130,8 @@ class Scraper:
                 date = job.find('span', class_='date')
                 link = job.find('a')['href']
 
-                is_location, location = self.is_location_set(location, job)
+                is_location, location = self.check_and_get_location(location,
+                                                                    job)
 
                 if not is_location or self.is_over30_skipped(date):
                     continue

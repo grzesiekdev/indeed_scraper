@@ -1,15 +1,19 @@
-from scraper.scraper import Scraper
-from scraper.template import Template
+from scraper import Scraper
+from template import Template
+from parser import ArgParse
 
 
 def start_scraping():
-    job_name = input('Enter job name: ')
-    place = input('Enter place: ')
-    radius = int(input('Enter radius: '))
+    args = ArgParse.parse_args()
+    job_name = args.job_name
+    location = args.location
+    radius = args.radius
+    skip = args.skip
+    is_test_version = args.test
 
-    scraper = Scraper(job_name, place, radius)
-    print(f'URL: {scraper.page.url}, Place: {scraper.location}, Job name: \
-{scraper.job_name}\n')
+    scraper = Scraper(job_name, location, radius, skip, is_test_version)
+    scraper.show_link()
+    scraper.find_job_offers()
 
     template = Template(scraper.offers, scraper.number_of_offers)
 
