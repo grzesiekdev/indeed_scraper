@@ -3,3 +3,4 @@ scraper_venv/
 __pycache__/
 scraper/__pycache__/
 scraper/tests/__pycache__/
+.mypy_cache
