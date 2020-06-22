@@ -8,19 +8,19 @@ All notable changes to this project will be documented in this file.
 ### Changelog
 
 Changelog:
-- url variable become public
-- Added modes: normal and test mode
- - Normal:
-  - Works on real website with requests, for day-to-day use
- - Test:
-  - Works on dummy website in /data, only for testing purposes
-- Better string formatting
-- Corrected variables names
-- Corrected small mistakes with mypy
-- Splitted main scraper function into smaller ones
-- Added sub-class JobOffer
-- Changed __repr__ to __str__
-- Added better tests
+* url variable become public
+* Added modes: normal and test mode
+ * Normal:
+  * Works on real website with requests, for day-to-day use
+ * Test:
+  * Works on dummy website in /data, only for testing purposes
+* Better string formatting
+* Corrected variables names
+* Corrected small mistakes with mypy
+* Splitted main scraper function into smaller ones
+* Added sub-class JobOffer
+* Changed __repr__ to __str__
+* Added better tests
 
 ## [0.0.2] - 2020-06-20
 
