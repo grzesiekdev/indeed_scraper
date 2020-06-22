@@ -27,6 +27,7 @@ class JobOffer():
         return self.offers
 
     def check_and_set_location(self) -> bool:
+        print(self.location)
         if not self.location:
             self.location = self.job.find('span', class_='location')
             if not self.location:

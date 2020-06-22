@@ -4,7 +4,7 @@ import re
 import math
 import sys
 import logging
-from job import JobOffer  # type: ignore
+from .job import JobOffer  # type: ignore
 
 
 class Scraper:
@@ -26,21 +26,22 @@ class Scraper:
         self.offers = {}
 
         logging.basicConfig(
-            filename='logs/log.log',
+            filename='scraper/logs/log.log',
             filemode='w',
         )
 
-    def show_link(self) -> None:
-        print(f'URL: {self.url}, Place: {self.location}, Job name: \
-{self.job_name}\n')
+    def show_info(self) -> str:
+        return (f'URL: {self.url},'
+                f'Place: {self.location},'
+                f'Job name: {self.job_name}\n')
 
-    def __set_to_test_mode(self) -> None:
-        with open('data/sample_page.html', 'r') as f:
+    def __use_test_mode(self) -> None:
+        with open('scraper/data/sample_page.html', 'r') as f:
             self.page = f.read()
         self.soup = BeautifulSoup(self.page, 'html.parser')
         self.result = self.soup.find(id='resultsCol')
 
-    def __set_to_normal_mode(self) -> None:
+    def __use_normal_mode(self) -> None:
         url = (
             'https://pl.indeed.com/jobs?'
             f'q={self.job_name}&'
@@ -64,9 +65,9 @@ class Scraper:
 
     def get_content(self) -> None:
         if self.is_test_version:
-            self.__set_to_test_mode()
+            self.__use_test_mode()
         else:
-            self.__set_to_normal_mode()
+            self.__use_normal_mode()
 
     def find_jobs_div(self) -> str:
         return self.result.find_all('div', class_='jobsearch-SerpJobCard')

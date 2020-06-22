@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import scraper as sc
-import template as tp  # type: ignore
-import parser  # type: ignore
+from . import scraper
+from . import template  # type: ignore
+from . import parser  # type: ignore
 
 
 def start_scraping():
@@ -12,17 +12,17 @@ def start_scraping():
     skip = args.skip
     is_test_version = args.test
 
-    scraper = sc.Scraper(
+    scraper = scraper.Scraper(
                             job_name,
                             location,
                             radius,
                             skip,
                             is_test_version
-                            )
+                        )
     scraper.get_content()
-    scraper.show_link()
+    print(scraper.show_info())
     scraper.find_job_offers()
-    template = tp.Template(scraper.offers, scraper.number_of_offers)
+    template = template.Template(scraper.offers, scraper.number_of_offers)
 
 
 if __name__ == '__main__':
