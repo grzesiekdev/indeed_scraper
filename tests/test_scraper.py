@@ -8,17 +8,18 @@ import unittest
 
 class TestMain(unittest.TestCase):
     def setUp(self) -> None:
-        self.scraper = Scraper('python', 'katowice', 15, 20, False)
         os.chdir('../scraper')
+        self.scraper = Scraper('python', 'katowice', 15, 20, False)
         self.scraper_local = Scraper('python', 'katowice', 15, 20, True)
-
-    """
-    Creating scraper object from ScraperLocal which works without requests,
-    but with static page in /data/ - i am checking with it adding to dicts,
-    which seems hard to implement with requests. Also, it's helpful to test
-    scraping page structure. Of course it won't help when page structure
-    changes.
-    """
+        self.scraper.get_content()
+        self.scraper_local.get_content()
+        """
+        Creating scraper object from ScraperLocal which works without requests,
+        but with static page in /data/ - i am checking with it adding to dicts,
+        which seems hard to implement with requests. Also, it's helpful to test
+        scraping page structure. Of course it won't help when page structure
+        changes.
+        """
 
 
 class TestInit(TestMain):
@@ -27,7 +28,7 @@ class TestInit(TestMain):
         self.assertEqual(self.scraper.location, 'katowice')
         self.assertEqual(self.scraper.radius, 15)
 
-        self.assertEqual(self.scraper.get_url(), 'https://pl.indeed.com/\
+        self.assertEqual(self.scraper.url, 'https://pl.indeed.com/\
 jobs?q=python&l=katowice&sort=date&radius=15&start=0')
         self.assertEqual(str(self.scraper.page), '<Response [200]>')
 
@@ -49,9 +50,9 @@ b3061858992c678a&fccid=b3f8eab3b50969f8&vjs=3')
         number_of_pages = self.scraper_local.find_number_of_pages()
         self.assertEqual(number_of_pages, 11)
 
-    def test_update_pages(self) -> None:
+    def test_get_pages(self) -> None:
         number_of_pages = self.scraper_local.find_number_of_pages()
-        urls = self.scraper_local.update_pages(number_of_pages)
+        urls = self.scraper_local.get_pages(number_of_pages)
 
         self.assertEqual(urls, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
 
@@ -59,11 +60,10 @@ b3061858992c678a&fccid=b3f8eab3b50969f8&vjs=3')
         jobs = self.scraper_local.find_jobs_div()
         for job in jobs:
             location = job.find('div', class_='location')
-            status, location = self.scraper_local.check_and_get_location(
-                                                                    location,
-                                                                    job
+            location = self.scraper_local.check_and_get_location(location,
+                                                                 job
                                                                  )
-        self.assertTrue(self.scraper_local.check_and_get_location(status,
+        self.assertTrue(self.scraper_local.check_and_get_location(location,
                                                                   True))
         self.assertTrue(self.scraper_local.check_and_get_location(location,
                                                         'Katowice śląskie'))
