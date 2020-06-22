@@ -1,6 +1,6 @@
 # Indeed Scraper
 This program is designed to scrap job offers from https://pl.indeed.com/. Scraped offers go to output.html, and are nicely represented in form of bootstrap table.
-
+For changelog take a look at https://github.com/grzesiekdev/indeed_scraper/blob/master/CHANGELOG.md
 ![Indeed Web scraper](https://i.imgur.com/DVAChtO.png)
 
 ### Built With
@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ## Usage
 
 ```
-usage: main.py [-h] -j JOB_NAME -l LOCATION -r RADIUS [-s SKIP] [-t]
+usage: python -m scraper.main.py [-h] -j JOB_NAME -l LOCATION -r RADIUS [-s SKIP] [-t]
 
 Scraping job offers from indeed.pl
 
@@ -67,5 +67,5 @@ python test_scraper.py
 - [x] Reorganize files structure
 - [x] Make find_jobs public and set_url private
 - [x] Improve CLI: use argparse for taking input from users
-- [ ] Use typing lib
 - [x] Reorganize Scraper class to make it easier for maintain
+- [ ] Use typing lib
