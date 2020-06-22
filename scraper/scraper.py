@@ -4,6 +4,7 @@ import re
 import math
 import sys
 import logging
+from job import JobOffer  # type: ignore
 
 
 class Scraper:
@@ -21,8 +22,8 @@ class Scraper:
         self.soup = None
         self.result = None
 
-        self.offers = {}
         self.number_of_offers = 0
+        self.offers = {}
 
         logging.basicConfig(
             filename='logs/log.log',
@@ -70,15 +71,6 @@ class Scraper:
     def find_jobs_div(self) -> str:
         return self.result.find_all('div', class_='jobsearch-SerpJobCard')
 
-    def add_to_offers(self, title: str, company: str, location: str, date: str,
-                      link: str) -> None:
-        self.offers[title] = {
-            'company': company,
-            'location': location,
-            'date': date,
-            'link': f'https://pl.indeed.com{link}'
-        }
-
     def find_number_of_pages(self) -> int:
         pages = self.soup.find(id='searchCountPages')
         if not pages:
@@ -90,81 +82,28 @@ class Scraper:
         return math.ceil(number_of_pages / 15)
 
     def get_pages(self, pages: int) -> list:
-        return [i for i in range(0, pages*10, 10)]
-
-    def check_and_get_location(self, location: str, job) -> object:
-        if not location:
-            location = job.find('span', class_='location').text.strip()
-            if not location:
-                return False
-        return location
-
-    def are_older_offers_skipped(self, date: str) -> bool:
-        if not self.skip:
-            self.skip = 40
-        exceptions = ['Dodano dzisiaj', 'wczoraj', 'Dodano przed chwilą']
-        if date in exceptions:
-            return False
-        if int(date[:2]) / 10 < 1 and self.skip >= 10:
-            return False
+        if not pages:
+            print("0 offers found! Try to change your query")
+            return []
         else:
-            if int(date[:2]) > self.skip:
-                return True
-            else:
-                return False
-
-    def process_jobs(self, attributes: dict, job):
-        title = attributes['title']
-        company = attributes['company']
-        location = attributes['location']
-        date = attributes['date']
-        link = attributes['link']
-
-        location = self.check_and_get_location(location, job)
-        if not location or self.are_older_offers_skipped(date):
-            return ''
-        location = location.text.strip()
-        if None in (title, company, location, date, link):
-            return ''
-        else:
-            return attributes
-
-    def get_attributes_from_job_offer(self, job) -> dict:
-        title = job.find('h2', class_='title').text.strip()
-        company = job.find('span', class_='company').text.strip()
-        location = job.find('div', class_='location')
-        date = job.find('span', class_='date').text.strip()
-        link = str(job.find('a')['href'])
-
-        return {
-                'title': title,
-                'company': company,
-                'location': location,
-                'date': date,
-                'link': link
-                }
+            return [i for i in range(0, pages*10, 10)]
 
     def find_job_offers(self) -> None:
-        pages = self.find_number_of_pages()
-        if not pages:
-            print('No offers found! Try to change your query.')
-            return
+        pages = self.get_pages(self.find_number_of_pages())
 
-        pages_updated = self.get_pages(pages)
-
-        for page in pages_updated:
+        for page in pages:
             self.page_number = page
             self.get_content()
             jobs = self.find_jobs_div()
             for job in jobs:
-                attributes = self.get_attributes_from_job_offer(job)
-                attributes = self.process_jobs(attributes, job)
-                title = attributes['title']
-                company = attributes['company']
-                location = attributes['location']
-                date = attributes['date']
-                link = attributes['link']
-                self.add_to_offers(title, company, location, date, link)
+                offer = JobOffer(job, self.skip)
+                offer.get_attibutes()
+                offer.process_jobs()
+                if offer.continue_loop:
+                    continue
+                else:
+                    offer.add_to_offers()
+                    self.offers.update(offer.offers)
                 self.number_of_offers += 1
         print("Done! Go check output.html")
 

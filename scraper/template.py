@@ -16,5 +16,5 @@ class Template:
             f.write(self.template.render(offers=self.offers,
                     number_of_offers=self.number_of_offers))
 
-    def __repr__(self):
+    def __str__(self):
         return f'Template object: {self.env}'

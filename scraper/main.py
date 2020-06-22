@@ -22,7 +22,6 @@ def start_scraping():
     scraper.get_content()
     scraper.show_link()
     scraper.find_job_offers()
-
     template = tp.Template(scraper.offers, scraper.number_of_offers)
 
 

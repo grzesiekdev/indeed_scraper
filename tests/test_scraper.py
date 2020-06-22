@@ -1,14 +1,14 @@
 import sys
 import os
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+# sys.path.append(
+#     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from scraper.scraper import Scraper
 import unittest
 
 
 class TestMain(unittest.TestCase):
     def setUp(self) -> None:
-        os.chdir('../scraper')
+        # os.chdir('../scraper')
         self.scraper = Scraper('python', 'katowice', 15, 20, False)
         self.scraper_local = Scraper('python', 'katowice', 15, 20, True)
         self.scraper.get_content()
